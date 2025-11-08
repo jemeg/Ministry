@@ -180,7 +180,7 @@ function showMessage(type, msg) {
 const paramedics = [
     { name: "/", code: "H-/", age: 28 },
     { name: "/", code: "H-/", age: 35 },
-    { name: "/", code: "H-/", age: 30 }
+    { name: "/", code: "H-23", age: 30 }
 ];
 
 // =================== نظام الحضور والانصراف ===================

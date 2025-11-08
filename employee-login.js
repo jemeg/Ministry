@@ -19,7 +19,7 @@ document.getElementById('employeeLoginForm').addEventListener('submit', function
         
         // الانتقال إلى صفحة المستخدم
         setTimeout(() => {
-            window.location.href = 'employee-schedule.html';
+            window.location.href = 'index.html';
         }, 1000);
     } else {
         showMessage('error', 'الرجاء إدخال اسم الموظف');
