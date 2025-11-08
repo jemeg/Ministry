@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <style>
         body {
             font-family: 'Cairo', sans-serif;
@@ -45,7 +48,7 @@
             <div class="admin-controls">
                 <div class="ms-auto">
                     <span class="me-3"><span id="employeeName"></span></span>
-                    <a href="employee-login.html" class="btn btn-outline-danger" onclick="sessionStorage.removeItem('employeeData')">
+                    <a href="login.html" class="btn btn-outline-danger" onclick="sessionStorage.removeItem('employeeData')">
                         <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
                     </a>
                     <a href="protocols.html" class="btn btn-info-1">
@@ -80,17 +83,17 @@
             <div class="gallery-navigation"></div>
         </div>
 
-        <!-- أزرار التصدير -->
-        <div class="row mb-3">
-            <div class="col">
-                <button class="btn btn-success" onclick="exportToExcel()">
-                    <i class="fas fa-file-excel"></i> تصدير إلى Excel
-                </button>
-                <button class="btn btn-danger" onclick="exportToPDF()">
-                    <i class="fas fa-file-pdf"></i> تصدير إلى PDF
-                </button>
-            </div>
-        </div>
+<!-- أزرار التصدير -->
+<div class="row mb-3">
+  <div class="col">
+    <button class="btn btn-success" onclick="exportToImage()">
+      <i class="fas fa-file-image"></i> تصدير إلى صورة (PNG)
+    </button>
+    <button class="btn btn-danger" onclick="exportToPDF()">
+      <i class="fas fa-file-pdf"></i> تصدير إلى PDF
+    </button>
+  </div>
+</div>
 
         <!-- جدول المناوبات -->
         <div class="title-container">
@@ -170,7 +173,7 @@
 
         <!-- قسم التقييم -->
         <div class="title-container">
-            <h1><span class="ministry-name">تقييم للمسعفين قريبا🔥</span></h1>
+            <h1><span class="ministry-name"> تقييم للمسعفين قريبا🔥</span></h1>
         </div>
         <div class="rating-section mb-5">
             <div id="paramedicRatings" class="row gy-3"></div>
@@ -203,9 +206,110 @@
         return diffHrs.toFixed(2);
     }
 
-    function recordCheckIn(paramedicId) {
-        const now = new Date();
-        const formatted = formatTime(now);
+    
+    function formatTime(date) {
+     return date.toLocaleTimeString();
+    }
+
+function calculateDuration(start, end) {
+  const diffMs = end - start;
+  const diffHrs = diffMs / (1000 * 60 * 60);
+  return diffHrs.toFixed(2);
+}
+
+function recordCheckIn(paramedicId) {
+  const activeCode = localStorage.getItem("activeCode");
+  if (paramedicId !== activeCode) {
+    alert("🚫 لا يمكنك تسجيل الدخول في كود مسعف آخر.");
+    return;
+  }
+
+  const now = new Date();
+  const formatted = formatTime(now);
+  const inCell = document.getElementById("in-" + paramedicId);
+  inCell.textContent = formatted;
+  localStorage.setItem(paramedicId + "_login", now.toISOString());
+
+  const outCell = document.getElementById("out-" + paramedicId);
+  outCell.innerHTML =
+    '<button class="btn btn-danger btn-sm" onclick="recordCheckOut(\'' +
+    paramedicId +
+    "')\">تسجيل الخروج</button>";
+}
+
+function recordCheckOut(paramedicId) {
+  const activeCode = localStorage.getItem("activeCode");
+  if (paramedicId !== activeCode) {
+    alert("🚫 لا يمكنك تسجيل الخروج في كود مسعف آخر.");
+    return;
+  }
+
+  const now = new Date();
+  const formatted = formatTime(now);
+  const outCell = document.getElementById("out-" + paramedicId);
+  outCell.textContent = formatted;
+  localStorage.setItem(paramedicId + "_logout", now.toISOString());
+
+  const loginTimeISO = localStorage.getItem(paramedicId + "_login");
+  if (loginTimeISO) {
+    const loginDate = new Date(loginTimeISO);
+    const duration = calculateDuration(loginDate, now);
+    const hoursCell = document.getElementById("hours-" + paramedicId);
+    hoursCell.textContent = duration;
+    localStorage.setItem(paramedicId + "_hours", duration);
+  }
+
+  const inCell = document.getElementById("in-" + paramedicId);
+  inCell.innerHTML =
+    '<button class="btn btn-success btn-sm" onclick="recordCheckIn(\'' +
+    paramedicId +
+    "')\">تسجيل الدخول</button>";
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const paramedics = ["H-60", "H-8", "H-23"];
+  const activeCode = localStorage.getItem("activeCode");
+
+  paramedics.forEach((id) => {
+    const loginISO = localStorage.getItem(id + "_login");
+    const logoutISO = localStorage.getItem(id + "_logout");
+    const hours = localStorage.getItem(id + "_hours");
+
+    const inCell = document.getElementById("in-" + id);
+    const outCell = document.getElementById("out-" + id);
+    const hoursCell = document.getElementById("hours-" + id);
+
+    // 🔒 تعطيل أزرار المسعفين الآخرين
+    if (id !== activeCode) {
+      if (inCell.querySelector("button"))
+        inCell.querySelector("button").disabled = true;
+      if (outCell.querySelector("button"))
+        outCell.querySelector("button").disabled = true;
+    }
+
+    if (loginISO && (!logoutISO || new Date(loginISO) > new Date(logoutISO))) {
+      inCell.textContent = formatTime(new Date(loginISO));
+      outCell.innerHTML =
+        '<button class="btn btn-danger btn-sm" onclick="recordCheckOut(\'' +
+        id +
+        "')\">تسجيل الخروج</button>";
+    } else {
+      inCell.innerHTML =
+        '<button class="btn btn-success btn-sm" onclick="recordCheckIn(\'' +
+        id +
+        "')\">تسجيل الدخول</button>";
+      if (logoutISO) {
+        outCell.textContent = formatTime(new Date(logoutISO));
+      }
+    }
+
+    if (hours) {
+      hoursCell.textContent = hours;
+    }
+  });
+});
+
+
 
         // عرض الوقت في الجدول
         const inCell = document.getElementById("in-" + paramedicId);
@@ -217,7 +321,7 @@
         // عرض زر الخروج
         const outCell = document.getElementById("out-" + paramedicId);
         outCell.innerHTML = '<button class="btn btn-danger btn-sm" onclick="recordCheckOut(\'' + paramedicId + '\')">تسجيل الخروج</button>';
-    }
+    
 
     function recordCheckOut(paramedicId) {
         const now = new Date();
@@ -274,6 +378,63 @@
         });
     });
     </script>
+
+<script>
+async function exportToImage() {
+  const body = document.body;
+
+  // نلتقط صورة كاملة للصفحة
+  const canvas = await html2canvas(body, {
+    scale: 2,
+    useCORS: true,
+    scrollY: -window.scrollY
+  });
+
+  const link = document.createElement("a");
+  link.download = "جدول_الاسعاف.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+async function exportToPDF() {
+  const { jsPDF } = window.jspdf;
+  const body = document.body;
+
+  // نلتقط صورة كاملة للصفحة
+  const canvas = await html2canvas(body, {
+    scale: 2,
+    useCORS: true,
+    scrollY: -window.scrollY
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const imgWidth = pageWidth;
+  const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+  let heightLeft = imgHeight;
+  let position = 0;
+
+  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+  heightLeft -= pageHeight;
+
+  // إذا كانت الصفحة أطول من صفحة A4، نقوم بتقسيمها تلقائيًا
+  while (heightLeft > 0) {
+    position = heightLeft - imgHeight;
+    pdf.addPage();
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+  }
+
+  pdf.save("جدول_الاسعاف.pdf");
+}
+</script>
+
+
 </body>
         <footer>
             &copy;  2026 وزارة الصحة - جميع الحقوق محفوظة 👩‍⚕️𝓖𝓱𝓪𝔃𝔀𝓪𝓷🚑

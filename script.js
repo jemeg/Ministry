@@ -613,3 +613,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // تحميل الصور عند بدء التطبيق
     loadImages();
 });
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getdatabase(app);
+
+  export { database };

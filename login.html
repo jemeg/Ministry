@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دخول الموظفين - نظام إدارة الإسعاف</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo-container">
+                    <div class="logo-shine"></div>
+                    <img src="logo.png" alt="شعار وزارة الصحة" class="ministry-logo">
+                </div>
+                <div class="title-container">
+                    <h2><span class="title-highlight">دخول الموظفين</span>
+                        <br>
+                        <span class="ministry-name">وزارة الصحة</span>
+                    </h2>
+                </div>
+            </div>
+<div class="login-box mt-4">
+      <h3 class="mb-4">تسجيل الدخول للوزارة🚑</h3>
+      <form id="loginForm">
+        <div class="mb-3 text-start">
+          <label class="form-label">كود المسعف</label>
+          <input type="text" id="paramedicCode" class="form-control text-center" placeholder="مثال: H-1" required>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Discord ID</label>
+          <input type="text" id="discordId" class="form-control text-center" placeholder="مثال: 53256789010012478" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mt-3">تسجيل الدخول</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 وزارة الصحة - جميع الحقوق محفوظة 👩‍⚕️𝓖𝓱𝓪𝔃𝔀𝓪𝓷🚑
+  </footer>
+
+  <script>
+    // 🧩 بيانات المسعفين المصرح لهم (يمكنك تعديلها لاحقًا)
+    const paramedicAccounts = {
+      "H-60": "123456789012345678",
+      "H-8": "987654321098765432",
+      "H-23": "112233445566778899"
+    };
+
+    document.getElementById("loginForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const code = document.getElementById("paramedicCode").value.trim();
+      const discordId = document.getElementById("discordId").value.trim();
+
+      if (!paramedicAccounts[code]) {
+        alert("❌ كود المسعف غير موجود.");
+        return;
+      }
+
+      if (paramedicAccounts[code] !== discordId) {
+        alert("🚫 الكود لا يتطابق مع حساب Discord المسجل.");
+        return;
+      }
+
+      // ✅ نجاح الدخول
+      localStorage.setItem("activeCode", code);
+      localStorage.setItem("discordId", discordId);
+      alert("✅ تم التحقق بنجاح، سيتم تحويلك الآن...");
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>

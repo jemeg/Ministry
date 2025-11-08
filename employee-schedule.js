@@ -10,7 +10,7 @@ let currentEmployee = null;
 // =================== تسجيل الخروج ===================
 function handleLogout() {
     sessionStorage.removeItem('employeeData');
-    location.replace('employee-login.html');
+    location.replace('login.html');
 }
 window.logout = function() { handleLogout(); };
 
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const employeeData = sessionStorage.getItem('employeeData');
         if (!employeeData) {
-            window.location.href = 'employee-login.html';
+            window.location.href = 'login.html';
             return;
         }
 
@@ -278,6 +278,17 @@ window.openBadgeModal = function() {
     const modal = new bootstrap.Modal(document.getElementById('badgeModal'));
     modal.show();
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+  const activeCode = localStorage.getItem('activeCode');
+  const discordId = localStorage.getItem('discordId');
+
+  if (!activeCode || !discordId) {
+    alert("🚫 يجب تسجيل الدخول أولاً.");
+    window.location.href = "login.html";
+    return;
+  }
+});
 
 // =================== تغيير شارة الرتبة ===================
 window.changeBadge = function() {

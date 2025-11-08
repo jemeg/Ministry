@@ -842,11 +842,16 @@ body {
 }
 
 .container {
-    background-color: white;
+    background-image: url('amp.png'); /* ضع هنا مسار الصورة */
+    background-size: cover;          /* تغطية كاملة للخلفية */
+    background-position: center;     /* توسيط الصورة */
+    background-repeat: no-repeat;    /* منع التكرار */
     padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-radius: 100px;
+    box-shadow: 0 50px 30px rgba(0,0,0,0.3);
+    color: #fff; /* لضمان وضوح النص على الصورة */
 }
+
 
 /* تنسيقات صفحة تسجيل الدخول */
 .login-container {
@@ -1539,3 +1544,15 @@ table:not(.admin-table) td:hover {
             margin-top: 40px;
             font-size: 1rem;
         }
+
+    /* تعديل الوان صفحة تسجيل الدخول */    
+
+            body { font-family: 'Cairo', sans-serif; background-color: #faf5f5; }
+    .login-box {
+      max-width: 400px;
+      margin: 100px auto;
+      background: rgb(255, 93, 93);
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
