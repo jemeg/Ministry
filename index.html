@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
-<head>
+<head> 
+    <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const activeCode = localStorage.getItem('activeCode');
+    const discordId = localStorage.getItem('discordId');
+
+    // 🚫 إذا لم يكن هناك مستخدم مسجل دخول → العودة إلى login.html
+    if (!activeCode || !discordId) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>جدول الإسعاف - وزارة الصحة</title>
