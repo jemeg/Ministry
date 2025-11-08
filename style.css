@@ -842,6 +842,14 @@ body {
 }
 
 .container {
+    background-color: rgb(214, 214, 214);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+
+.container1 {
     background-image: url('amp.png'); /* ضع هنا مسار الصورة */
     background-size: cover;          /* تغطية كاملة للخلفية */
     background-position: center;     /* توسيط الصورة */
