@@ -2,23 +2,23 @@
 const RANK_BADGES = {
     'مسعف': {
         class: 'bronze',
-        image: 'images/bronze-badge.png'
+        image: 'bronze-badge.png'
     },
     'مسعف متقدم': {
         class: 'silver',
-        image: 'images/silver-badge.png'
+        image: 'silver-badge.png'
     },
     'فني طوارئ': {
         class: 'gold',
-        image: 'images/gold-badge.png'
+        image: 'gold-badge.png'
     },
     'أخصائي طوارئ': {
         class: 'platinum',
-        image: 'images/platinum-badge.png'
+        image: 'platinum-badge.png'
     },
     'استشاري طوارئ': {
         class: 'diamond',
-        image: 'images/diamond-badge.png'
+        image: 'diamond-badge.png'
     }
 };
 
@@ -26,7 +26,7 @@ const RANK_BADGES = {
 function createRankBadge(rank) {
     const badgeConfig = RANK_BADGES[rank] || {
         class: 'bronze',
-        image: 'images/default-badge.png'
+        image: 'default-badge.png'
     };
     
     return `

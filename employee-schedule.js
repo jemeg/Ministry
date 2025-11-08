@@ -178,9 +178,9 @@ function showMessage(type, msg) {
 
 // =================== بيانات المسعفين ===================
 const paramedics = [
-    { name: "محمد", code: "H-60", age: 28 },
-    { name: "منتهي", code: "H-8", age: 35 },
-    { name: "علي", code: "H-23", age: 30 }
+    { name: "/", code: "H-/", age: 28 },
+    { name: "/", code: "H-/", age: 35 },
+    { name: "/", code: "H-/", age: 30 }
 ];
 
 // =================== نظام الحضور والانصراف ===================
