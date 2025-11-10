@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
-<head> 
+<head>
     <script>
   document.addEventListener('DOMContentLoaded', () => {
     const activeCode = localStorage.getItem('activeCode');
@@ -12,6 +12,7 @@
     }
   });
 </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>جدول الإسعاف - وزارة الصحة</title>
@@ -217,17 +218,6 @@
         return diffHrs.toFixed(2);
     }
 
-    
-    function formatTime(date) {
-     return date.toLocaleTimeString();
-    }
-
-function calculateDuration(start, end) {
-  const diffMs = end - start;
-  const diffHrs = diffMs / (1000 * 60 * 60);
-  return diffHrs.toFixed(2);
-}
-
 function recordCheckIn(paramedicId) {
   const activeCode = localStorage.getItem("activeCode");
   if (paramedicId !== activeCode) {
@@ -343,17 +333,32 @@ window.addEventListener("DOMContentLoaded", () => {
 
         localStorage.setItem(paramedicId + "_logout", now.toISOString());
 
-        // حساب مدة العمل
-        const loginTimeISO = localStorage.getItem(paramedicId + "_login");
-        if (loginTimeISO) {
-            const loginDate = new Date(loginTimeISO);
-            const duration = calculateDuration(loginDate, now);
+// حساب مدة العمل التراكمي
+const loginTimeISO = localStorage.getItem(paramedicId + "_login");
+if (loginTimeISO) {
+    const loginDate = new Date(loginTimeISO);
+    const now = new Date();
 
-            const hoursCell = document.getElementById("hours-" + paramedicId);
-            hoursCell.textContent = duration;
+    // المدة الجديدة في آخر جلسة
+    const newDuration = calculateDuration(loginDate, now);
 
-            localStorage.setItem(paramedicId + "_hours", duration);
-        }
+    // جلب الساعات السابقة من التخزين
+    let previousTotal = parseFloat(localStorage.getItem(paramedicId + "_hours")) || 0;
+
+    // إضافة المدة الجديدة إلى الإجمالي السابق
+    const totalHours = previousTotal + parseFloat(newDuration);
+
+    // حفظ الإجمالي الجديد
+    localStorage.setItem(paramedicId + "_hours", totalHours.toFixed(2));
+
+    // عرض النتيجة في الجدول
+    const hoursCell = document.getElementById("hours-" + paramedicId);
+    hoursCell.textContent = totalHours.toFixed(2) + " ساعة";
+
+    // حذف وقت الدخول (لمنع التكرار في الحساب القادم)
+    localStorage.removeItem(paramedicId + "_login");
+}
+
 
         // بعد تسجيل الخروج، عرض زر تسجيل الدخول مرة أخرى
         const inCell = document.getElementById("in-" + paramedicId);

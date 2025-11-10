@@ -290,6 +290,40 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// =================== تغيير ================================
+function recordCheckOut(paramedicId) {
+    const now = new Date();
+    const loginTimeISO = localStorage.getItem(paramedicId + "_login");
+
+    if (!loginTimeISO) {
+        alert("⚠️ لم يتم تسجيل الدخول أولاً!");
+        return;
+    }
+
+    const loginDate = new Date(loginTimeISO);
+    const sessionDuration = calculateDuration(loginDate, now);
+
+    // 🧮 إضافة المدة الجديدة إلى الساعات السابقة
+    const previousHours = parseFloat(localStorage.getItem(paramedicId + "_hours")) || 0;
+    const totalHours = previousHours + parseFloat(sessionDuration);
+
+    // 💾 تحديث البيانات في localStorage
+    localStorage.setItem(paramedicId + "_logout", now.toISOString());
+    localStorage.setItem(paramedicId + "_hours", totalHours.toFixed(2));
+    localStorage.setItem(paramedicId + "_status", "offline"); // حالة جديدة
+
+    // 👀 تحديث الواجهة
+    const outCell = document.getElementById("out-" + paramedicId);
+    if (outCell) outCell.textContent = now.toLocaleTimeString("ar-SA");
+
+    const hoursCell = document.getElementById("hours-" + paramedicId);
+    if (hoursCell) hoursCell.textContent = totalHours.toFixed(2) + " ساعة";
+
+    // 🔒 لا نحذف login — فقط نحدث الحالة
+    alert("✅ تم تسجيل الخروج وحفظ الساعات بنجاح.");
+}
+
+
 // =================== تغيير شارة الرتبة ===================
 window.changeBadge = function() {
     const select = document.getElementById('rankSelect');

@@ -43,6 +43,62 @@
             <p>وزارة الصحة</p>
         </div>
 
+                                          <!-- زر إعادة ضبط الساعات -->
+                                        <div class="text-center mt-5">
+                                          <button id="adminResetBtn" class="btn btn-danger" style="display:none;">
+                                            🔄 إعادة ضبط جميع الساعات
+                                          </button>
+                                        
+                                          <button id="adminLoginBtn" class="btn btn-dark">
+                                            🔐 تسجيل دخول المسؤول
+                                          </button>
+                                        </div>
+                                        
+                                        <script>
+                                        /* 🔑 بيانات المسؤول (يمكنك تعديلها لاحقًا) */
+                                        const ADMIN_ID = "Qir5hoon";   // ID الخاص بالمشرف
+                                        const ADMIN_CODE = "Qir5hoon_1998-1999";  // كود الدخول الخاص بالمشرف
+                                        
+                                        // زر تسجيل الدخول للمسؤول
+                                        document.getElementById("adminLoginBtn").addEventListener("click", () => {
+                                          const id = prompt("أدخل ID المشرف:");
+                                          const code = prompt("أدخل كود الدخول:");
+                                        
+                                          if (id === ADMIN_ID && code === ADMIN_CODE) {
+                                            alert("✅ تم التحقق بنجاح، يمكنك الآن إعادة ضبط الساعات.");
+                                            document.getElementById("adminResetBtn").style.display = "inline-block";
+                                            document.getElementById("adminLoginBtn").style.display = "none";
+                                          } else {
+                                            alert("🚫 بيانات الدخول غير صحيحة!");
+                                          }
+                                        });
+                                        
+                                        // زر إعادة ضبط الساعات
+                                        document.getElementById("adminResetBtn").addEventListener("click", () => {
+                                          if (confirm("هل أنت متأكد أنك تريد إعادة ضبط جميع الساعات؟")) {
+                                            resetAllHours();
+                                          }
+                                        });
+                                        
+                                        // دالة إعادة الضبط
+                                        function resetAllHours() {
+                                          const keys = Object.keys(localStorage);
+                                          let count = 0;
+                                        
+                                          keys.forEach(key => {
+                                            if (key.endsWith("_hours") || key.endsWith("_login") || key.endsWith("_logout")) {
+                                              localStorage.removeItem(key);
+                                              count++;
+                                            }
+                                          });
+                                        
+                                          alert(`🧹 تم إعادة ضبط ${count} من سجلات الساعات بنجاح.`);
+                                          location.reload(); // تحديث الصفحة بعد المسح
+                                        }
+                                        </script>
+
+
+
         <!-- جدول التواجد -->
         <div class="table-responsive mb-5">
             <table class="table table-striped table-bordered align-middle" id="attendanceTable">
