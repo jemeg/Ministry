@@ -1,78 +1,38 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دخول الموظفين - نظام إدارة الإسعاف</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تسجيل الدخول - Ministry</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <div class="login-container">
-            <div class="login-header">
-                <div class="logo-container">
-                    <div class="logo-shine"></div>
-                    <img src="logo.png" alt="شعار وزارة الصحة" class="ministry-logo">
-                </div>
-                <div class="title-container">
-                    <h2><span class="title-highlight">دخول الموظفين</span>
-                        <br>
-                        <span class="ministry-name">وزارة الصحة</span>
-                    </h2>
-                </div>
-            </div>
-<div class="login-box mt-4">
-      <h3 class="mb-4">تسجيل الدخول للوزارة🚑</h3>
-      <form id="loginForm">
-        <div class="mb-3 text-start">
-          <label class="form-label">كود المسعف</label>
-          <input type="text" id="paramedicCode" class="form-control text-center" placeholder="مثال: H-1" required>
-        </div>
-        <div class="mb-3 text-start">
-          <label class="form-label">Discord ID</label>
-          <input type="text" id="discordId" class="form-control text-center" placeholder="مثال: 53256789010012478" required>
-        </div>
-        <button type="submit" class="btn btn-primary w-100 mt-3">تسجيل الدخول</button>
-      </form>
-    </div>
-  </div>
+<body class="d-flex align-items-center justify-content-center" style="height:100vh;">
+<div class="card p-4" style="width:360px;">
+<h4 class="mb-3">تسجيل دخول المسعف</h4>
+<div class="mb-2"><input id="inputId" class="form-control" placeholder="ID المستخدم"></div>
+<div class="mb-3"><input id="inputCode" class="form-control" placeholder="Code (مثال H-1)"></div>
+<button id="loginBtn" class="btn btn-primary w-100">دخول</button>
+<div id="loginMsg" class="mt-3"></div>
+</div>
 
-  <footer>
-    &copy; 2026 وزارة الصحة - جميع الحقوق محفوظة 👩‍⚕️𝓖𝓱𝓪𝔃𝔀𝓪𝓷🚑
-  </footer>
 
-  <script>
-    // 🧩 بيانات المسعفين المصرح لهم (يمكنك تعديلها لاحقًا)
-    const paramedicAccounts = {
-      "H-60": "123456789012345678",
-      "H-8": "987654321098765432",
-      "H-23": "112233445566778899"
-    };
-
-    document.getElementById("loginForm").addEventListener("submit", e => {
-      e.preventDefault();
-      const code = document.getElementById("paramedicCode").value.trim();
-      const discordId = document.getElementById("discordId").value.trim();
-
-      if (!paramedicAccounts[code]) {
-        alert("❌ كود المسعف غير موجود.");
-        return;
-      }
-
-      if (paramedicAccounts[code] !== discordId) {
-        alert("🚫 الكود لا يتطابق مع حساب Discord المسجل.");
-        return;
-      }
-
-      // ✅ نجاح الدخول
-      localStorage.setItem("activeCode", code);
-      localStorage.setItem("discordId", discordId);
-      alert("✅ تم التحقق بنجاح، سيتم تحويلك الآن...");
-      window.location.href = "index.html";
-    });
-  </script>
+<script type="module">
+import { verifyUser } from './database.js';
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+const id = document.getElementById('inputId').value.trim();
+const code = document.getElementById('inputCode').value.trim();
+const msg = document.getElementById('loginMsg');
+if(!id || !code){ msg.innerText = 'الرجاء إدخال ID و Code'; return; }
+msg.innerText = 'جاري التحقق...';
+const res = await verifyUser(id, code);
+if(res && res.length===1){
+// حفظ بيانات المستخدم في sessionStorage للصفحات الأخرى
+sessionStorage.setItem('employeeData', JSON.stringify(res[0]));
+window.location.href = 'index.html';
+} else {
+msg.innerText = 'ID أو Code غير صحيح أو الحساب غير نشط';
+}
+});
+</script>
 </body>
 </html>
