@@ -11,41 +11,114 @@
 <style>body{font-family:'Cairo',sans-serif}</style>
 </head>
 <body>
-<div class="container mt-4">
-<div class="header-section d-flex align-items-center justify-content-between">
-<div>
-<h2>جدول الإسعاف - وزارة الصحة</h2>
-</div>
-<div>
-<span id="employeeName" class="me-3"></span>
-<a id="logoutBtn" class="btn btn-outline-danger" href="#">تسجيل الخروج</a>
-<a href="protocols.html" class="btn btn-info-1">بروتوكولات</a>
-</div>
-</div>
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="header-section">
+            <div class="logo-container">
+                <div class="logo-shine"></div>
+                <img src="logo.png" alt="شعار وزارة الصحة" class="ministry-logo">
+            </div>
+            <div class="title-container">
+                <h1>
+                    <span class="title-highlight">جدول الإسعاف</span>
+                    <br>
+                    <span class="ministry-name">وزارة الصحة</span>
+                </h1>
+            </div>
+            <div class="admin-controls">
+                <div class="ms-auto">
+                    <span class="me-3"><span id="employeeName"></span></span>
+                    <a href="login.html" class="btn btn-outline-danger" onclick="sessionStorage.removeItem('employeeData')">
+                        <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                    </a>
+                    <a href="protocols.html" class="btn btn-info-1">
+                        <i class="fas fa-book"></i> بروتوكولات الإسعاف
+                    </a>
+                    <a href="localStorage.html" class="btn btn-info-2">
+                        <i class="fas fa-clock"></i> سجل تواجد المسعفين
+                    </a>
+                </div>
+            </div>
+        </div>
 
 
-<!-- معرض الصور -->
-<div class="image-gallery mt-3">
-<div class="image-grid"></div>
-</div>
+        <!-- معرض الصور -->
+        <div class="image-gallery">
+            <div class="gallery-header">
+                <h3>صور الفريق</h3>
+            </div>
+            <div class="image-grid">
+                <div class="image-card">
+                    <img src="teem.png" alt="فريق الإسعاف">
+                    <div class="image-overlay">
+                        <span class="image-title">فريق الإسعاف</span>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <img src="teem2.png" alt="إدارة خدماة الإسعاف">
+                    <div class="image-overlay">
+                        <span class="image-title">إدارة خدماة الإسعاف</span>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-navigation"></div>
+        </div>
 
+        <!-- جدول المناوبات -->
+        <div class="title-container">
+            <h1><span class="ministry-name">جدول المناوبات</span></h1>
+        </div>
+        <div class="table-responsive mb-5">
+            <table class="table table-bordered table-hover" id="scheduleTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th>التاريخ</th>
+                        <th>اليوم</th>
+                        <th>الوردية</th>
+                        <th>الحالة</th>
+                        <th>التفعيل</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleTableBody"></tbody>
+                <tr>
+                    <td><i class="fas fa-check-circle text-center"></i> لم يتم التفعيل</td>
+                    <td><i class="fas fa-check-circle text-center"></i> لم يتم التفعيل</td>
+                    <td><i class="fas fa-check-circle text-center"></i> لم يتم التفعيل</td>
+                    <td><i class="fas fa-check-circle text-danger"></i> قريبا</td>
+                    <td><i class="fas fa-check-circle text-success"></i> غير مفعل</td>
+                </tr>
+            </table>
+        </div>
 
-<!-- جدول المناوبات -->
-<div class="table-responsive mb-5 mt-4">
-<table class="table table-bordered" id="scheduleTable">
-<thead class="table-dark"><tr><th>التاريخ</th><th>اليوم</th><th>الرتبة</th><th>الوردية</th><th>الحالة</th><th>الساعات</th></tr></thead>
-<tbody id="scheduleTableBody"></tbody>
-</table>
-</div>
+        <!-- جدول بيانات المسعفين -->
+        <div class="title-container">
+            <h1><span class="ministry-name">بيانات المسعفين</span></h1>
+        </div>
 
-
-<!-- جدول المسعفين -->
-<div class="table-responsive mb-5">
-<table class="table table-striped" id="paramedicTable">
-<thead class="table-dark"><tr><th>اسم المسعف</th><th>كود</th><th>العمر</th><th>دخول</th><th>خروج</th><th>إجمالي الساعات</th></tr></thead>
-<tbody id="paramedicTableBody"></tbody>
-</table>
-</div>
+        <div class="table-responsive mb-5">
+            <table class="table table-striped table-hover align-middle" id="paramedicTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th>اسم المسعف</th>
+                        <th>كود المسعف</th>
+                        <th>العمر</th>
+                        <th>وقت الدخول</th>
+                        <th>وقت الخروج</th>
+                        <th>إجمالي الساعات</th>
+                        <th>تحذير</th>
+                    </tr>
+                </thead>
+                <tbody id="paramedicTableBody">
+                    <tr>
+                        <td>محمد</td>
+                        <td>H-60</td>
+                        <td>+18</td>
+                        <td id="in-H-60"><button class="btn btn-success btn-sm" onclick="recordCheckIn('H-60')">تسجيل الدخول</button></td>
+                        <td id="out-H-60"><button class="btn btn-danger btn-sm" onclick="recordCheckOut('H-60')">تسجيل الخروج</button></td>
+                        <td id="hours-H-60">-</td>
+                        <td><i class="fas fa-check-circle text-success"></i> لا يوجد</td>
+                    </tr>
+                    <tr>
 
 
 <nav class="mt-3"><ul class="pagination justify-content-center" id="pagination"></ul></nav>
